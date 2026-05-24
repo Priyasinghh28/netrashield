@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #050816;
+    --bg2: #080d20;
+    --cyan: #00f5ff;
+    --blue: #0066ff;
+    --blue2: #0d47ff;
+    --glow-cyan: rgba(0,245,255,0.15);
+    --glow-blue: rgba(0,102,255,0.2);
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(0,245,255,0.15);
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #ff3860;
+    --warn: #f59e0b;
+    --success: #10b981;
+    --font: 'Space Grotesk', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+  /* NAVBAR */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 4rem;
+    background: rgba(5,8,22,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+  }
+
+  .nav-logo {
+    font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px;
+    color: white;
+  }
+  .nav-logo span { color: var(--cyan); }
+
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem;
+    font-weight: 500; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--blue), var(--blue2));
+    color: white; border: none; padding: 0.6rem 1.5rem;
+    border-radius: 8px; font-family: var(--font); font-size: 0.9rem;
+    font-weight: 600; cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,102,255,0.3);
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { box-shadow: 0 0 30px rgba(0,102,255,0.5); transform: translateY(-1px); }
+
+  /* SECTIONS */
+  section { padding: 7rem 4rem; max-width: 1200px; margin: 0 auto; }
+
+  /* HERO */
+  .hero-section {
+    min-height: 100vh; max-width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,102,255,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,245,255,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 30% at 20% 60%, rgba(0,66,255,0.12) 0%, transparent 50%);
+  }
+
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,245,255,0.08); border: 1px solid rgba(0,245,255,0.2);
+    padding: 0.4rem 1.2rem; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 500; color: var(--cyan);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 2rem; position: relative; z-index: 1;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-badge::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cyan); animation: pulse 2s infinite;
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700; line-height: 1.05;
+    letter-spacing: -2px; position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+
+  .hero-h1 .cyan { color: var(--cyan); }
+
+  .hero-sub {
+    max-width: 620px; margin: 1.5rem auto 0;
+    font-size: 1.1rem; color: var(--muted); line-height: 1.7;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-top: 2.5rem; position: relative; z-index: 1;
+    animation: fadeUp 0.8s 0.45s ease both;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #050816; padding: 0.85rem 2rem; border: none;
+    border-radius: 10px; font-family: var(--font); font-size: 0.95rem;
+    font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
+    box-shadow: 0 0 30px rgba(0,245,255,0.3);
+    transition: all 0.25s;
+  }
+  .btn-primary:hover { box-shadow: 0 0 50px rgba(0,245,255,0.5); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent; color: var(--cyan);
+    border: 1px solid rgba(0,245,255,0.4);
+    padding: 0.85rem 2rem; border-radius: 10px;
+    font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .btn-outline:hover {
+    background: rgba(0,245,255,0.08);
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0,245,255,0.15);
+  }
+
+  /* FLOATING ORBS */
+  .orb {
+    position: absolute; border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .orb1 { width: 300px; height: 300px; top: 20%; left: -5%; background: radial-gradient(circle, rgba(0,102,255,0.15) 0%, transparent 70%); animation-delay: 0s; }
+  .orb2 { width: 400px; height: 400px; top: 50%; right: -10%; background: radial-gradient(circle, rgba(0,245,255,0.1) 0%, transparent 70%); animation-delay: 2s; }
+  .orb3 { width: 200px; height: 200px; bottom: 20%; left: 30%; background: radial-gradient(circle, rgba(0,66,255,0.12) 0%, transparent 70%); animation-delay: 4s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* SECTION HEADERS */
+  .sec-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 0.75rem;
+  }
+
+  .sec-h2 {
+    font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
+    letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.1;
+  }
+
+  .sec-sub {
+    color: var(--muted); font-size: 1rem; max-width: 560px;
+    line-height: 1.7; margin-bottom: 3.5rem;
+  }
+
+  /* GLASS CARD */
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  /* STORY SECTION */
+  .story-grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: 2px; position: relative;
+  }
+
+  .story-line {
+    position: absolute; left: 28px; top: 0; bottom: 0;
+    width: 1px; background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+  }
+
+  .story-card {
+    display: flex; gap: 2rem; align-items: flex-start;
+    padding: 2rem 2rem 2rem 0;
+    opacity: 0; transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+  .story-card.visible { opacity: 1; transform: translateX(0); }
+
+  .story-num {
+    width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem; font-family: var(--mono);
+    background: rgba(0,245,255,0.08);
+    border: 1px solid rgba(0,245,255,0.25);
+    color: var(--cyan); position: relative; z-index: 1;
+  }
+
+  .story-body h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .story-body p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+
+  .story-tag {
+    display: inline-block; margin-top: 0.75rem;
+    padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.75rem;
+    font-weight: 600; font-family: var(--mono); letter-spacing: 0.5px;
+  }
+  .tag-red { background: rgba(255,56,96,0.15); color: var(--danger); border: 1px solid rgba(255,56,96,0.2); }
+  .tag-warn { background: rgba(245,158,11,0.15); color: var(--warn); border: 1px solid rgba(245,158,11,0.2); }
+  .tag-critical { background: rgba(255,56,96,0.25); color: var(--danger); border: 1px solid var(--danger); }
+
+  /* ATTACK CARDS SCROLL */
+  .scroll-track {
+    display: flex; gap: 1.25rem; padding: 0.5rem 0 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    animation: scrollX 30s linear infinite;
+  }
+  .scroll-track::-webkit-scrollbar { display: none; }
+
+  @keyframes scrollX {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .scroll-track:hover { animation-play-state: paused; }
+
+  .attack-card {
+    flex-shrink: 0; width: 260px;
+    padding: 1.75rem; border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,245,255,0.1);
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .attack-card:hover {
+    border-color: rgba(0,245,255,0.4);
+    box-shadow: 0 0 30px rgba(0,245,255,0.1);
+    transform: translateY(-4px);
+    background: rgba(0,245,255,0.05);
+  }
+
+  .attack-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1rem;
+    background: rgba(0,245,255,0.08);
+    border: 1px solid rgba(0,245,255,0.15);
+  }
+
+  .attack-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .attack-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+  .attack-level {
+    margin-top: 1rem; font-size: 0.7rem; font-weight: 600;
+    font-family: var(--mono); letter-spacing: 1px;
+  }
+
+  /* BIOMETRICS */
+  .bio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+
+  .bio-card {
+    padding: 2rem;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,245,255,0.1);
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .bio-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .bio-card:hover::before { opacity: 1; }
+  .bio-card:hover {
+    border-color: rgba(0,245,255,0.3);
+    box-shadow: 0 0 40px rgba(0,245,255,0.08);
+    transform: translateY(-4px);
+  }
+
+  .bio-icon-wrap {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, rgba(0,102,255,0.2), rgba(0,245,255,0.1));
+    border: 1px solid rgba(0,245,255,0.15);
+  }
+
+  .bio-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .bio-card p { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
+
+  .bio-bar-wrap { margin-top: 1.25rem; }
+  .bio-bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; font-family: var(--mono); }
+  .bio-bar-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .bio-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); animation: barFill 2s ease both; }
+  @keyframes barFill { from { width: 0 !important; } }
+
+  /* FRAUD SIMULATION */
+  .sim-wrap {
+    background: rgba(5,8,22,0.9);
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 20px; padding: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .sim-wrap::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at top right, rgba(0,102,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .sim-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .sim-title {
+    font-size: 0.8rem; font-family: var(--mono); letter-spacing: 2px;
+    text-transform: uppercase; color: var(--cyan);
+  }
+
+  .sim-status {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-family: var(--mono);
+    color: var(--success);
+  }
+  .sim-status::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success); animation: pulse 1.5s infinite;
+    box-shadow: 0 0 6px var(--success);
+  }
+
+  .trust-score-wrap { text-align: center; margin: 1.5rem 0; }
+  .trust-label { font-size: 0.75rem; color: var(--muted); font-family: var(--mono); margin-bottom: 0.5rem; letter-spacing: 1px; }
+
+  .trust-ring {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: conic-gradient(var(--danger) 0%, var(--warn) 30%, var(--success) 60deg, rgba(255,255,255,0.05) 60deg);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    position: relative;
+  }
+  .trust-ring::before {
+    content: ''; position: absolute; inset: 8px;
+    background: var(--bg); border-radius: 50%;
+  }
+  .trust-score-val {
+    position: relative; z-index: 1;
+    font-size: 2rem; font-weight: 700; font-family: var(--mono);
+    color: var(--warn);
+  }
+
+  .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+
+  .signal-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 1rem;
+  }
+
+  .signal-label {
+    font-size: 0.7rem; font-family: var(--mono); letter-spacing: 1px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
+  }
+
+  .signal-bar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; margin-bottom: 0.4rem; }
+
+  .signal-bar { height: 100%; border-radius: 3px; transition: width 1s ease; }
+  .bar-good { background: linear-gradient(90deg, #10b981, #34d399); }
+  .bar-warn { background: linear-gradient(90deg, #f59e0b, #fcd34d); }
+  .bar-bad { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+  .signal-val { font-size: 0.8rem; font-family: var(--mono); font-weight: 600; }
+  .val-good { color: var(--success); }
+  .val-warn { color: var(--warn); }
+  .val-bad { color: var(--danger); }
+
+  .alert-box {
+    margin-top: 1.5rem; padding: 1rem 1.25rem;
+    background: rgba(255,56,96,0.08);
+    border: 1px solid rgba(255,56,96,0.25);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .alert-text { font-size: 0.85rem; font-family: var(--mono); color: var(--danger); }
+
+  /* DASHBOARD */
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  .dash-card {
+    background: rgba(5,8,22,0.8);
+    border: 1px solid rgba(0,245,255,0.12);
+    border-radius: 16px; padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+
+  .dash-card-title {
+    font-size: 0.7rem; font-family: var(--mono); letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .dot-active {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success); box-shadow: 0 0 6px var(--success);
+    animation: pulse 2s infinite;
+  }
+
+  .metric-big {
+    font-size: 2.5rem; font-weight: 700; font-family: var(--mono);
+    line-height: 1; margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, white, var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .metric-sub { font-size: 0.8rem; color: var(--muted); font-family: var(--mono); }
+
+  .log-feed { display: flex; flex-direction: column; gap: 0.5rem; }
+  .log-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    font-size: 0.78rem; font-family: var(--mono); padding: 0.5rem;
+    border-radius: 6px; background: rgba(255,255,255,0.02);
+    animation: logSlide 0.5s ease both;
+  }
+  @keyframes logSlide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; } }
+
+  .log-time { color: var(--muted); flex-shrink: 0; font-size: 0.7rem; }
+  .log-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .log-dot.red { background: var(--danger); box-shadow: 0 0 4px var(--danger); }
+  .log-dot.warn { background: var(--warn); box-shadow: 0 0 4px var(--warn); }
+  .log-dot.green { background: var(--success); box-shadow: 0 0 4px var(--success); }
+
+  /* ROADMAP */
+  .road-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+
+  .road-card {
+    padding: 2rem; border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .road-card:hover {
+    border-color: rgba(0,245,255,0.25);
+    box-shadow: 0 0 40px rgba(0,245,255,0.06);
+    transform: translateY(-4px);
+  }
+  .road-phase {
+    font-size: 0.65rem; font-family: var(--mono); letter-spacing: 2px;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 0.75rem; opacity: 0.7;
+  }
+  .road-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.3; }
+  .road-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+  .road-glow {
+    position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,245,255,0.08) 0%, transparent 70%);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid rgba(0,245,255,0.08);
+    color: var(--muted); font-size: 0.875rem;
+  }
+  footer span { color: var(--cyan); }
+
+  /* SECTION DIVIDER */
+  .full-section { max-width: 100%; padding: 5rem 4rem; }
+  .inner { max-width: 1200px; margin: 0 auto; }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section, .full-section { padding: 4rem 1.5rem; }
+    .hero-section { padding: 6rem 1.5rem 3rem; }
+    .dash-grid { grid-template-columns: 1fr; }
+    .signal-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">NetraShield — AI-Powered Behavioral Fraud Defense Landing Page</h2>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">Netra<span>Shield</span></div>
+  <div class="nav-links">
+    <a href="#story">Threat Map</a>
+    <a href="#solution">Defense</a>
+    <a href="#simulation">Live Demo</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+  <button class="nav-cta">Request Access</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="hero-badge">AI-Powered Behavioral Biometrics</div>
+
+  <h1 class="hero-h1">
+    Faces can be forged.<br>
+    <span class="cyan">Human behavior</span> cannot.
+  </h1>
+
+  <p class="hero-sub">
+    NetraShield detects fraud before credentials are abused by analyzing behavioral biometrics invisible to attackers — in real time, at scale.
+  </p>
+
+  <div class="hero-buttons">
+    <button class="btn-primary">⚡ Launch Simulation</button>
+    <button class="btn-outline">→ Explore Threats</button>
+  </div>
+</div>
+
+<!-- STORY SECTION -->
+<section id="story" class="reveal">
+  <div class="sec-label">Threat Intelligence</div>
+  <h2 class="sec-h2">How Modern Identity Fraud Unfolds</h2>
+  <p class="sec-sub">A single stolen credential cascades into a multi-vector attack. NetraShield breaks the chain at every step.</p>
+
+  <div class="story-grid">
+    <div class="story-line"></div>
+
+    <div class="story-card visible" style="transition-delay:0.1s">
+      <div class="story-num">01</div>
+      <div class="story-body">
+        <h3>Credentials Harvested</h3>
+        <p>Phishing campaigns and dark web breaches expose login credentials for millions of banking accounts. Attackers purchase validated credential sets for as little as $2 per account.</p>
+        <span class="story-tag tag-red">THREAT LEVEL: HIGH</span>
+      </div>
+    </div>
+
+    <div class="story-card visible" style="transition-delay:0.25s">
+      <div class="story-num">02</div>
+      <div class="story-body">
+        <h3>Identity Cloned via Deepfake</h3>
+        <p>AI-generated deepfakes bypass video KYC verification. Voice cloning fools call center agents. The attacker now has a fully verified digital identity indistinguishable from the real customer.</p>
+        <span class="story-tag tag-warn">CRITICAL VULNERABILITY</span>
+      </div>
+    </div>
+
+    <div class="story-card visible" style="transition-delay:0.4s">
+      <div class="story-num">03</div>
+      <div class="story-body">
+        <h3>Fraud Executed at Scale</h3>
+        <p>Fraudulent transfers, credit applications, and account takeovers are executed simultaneously across thousands of accounts before traditional detection triggers any alert.</p>
+        <span class="story-tag tag-critical">⚠ BREACH CONFIRMED</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATTACK CARDS (Horizontal Scroll) -->
+<div class="full-section" id="attacks">
+  <div class="inner">
+    <div class="sec-label">Attack Vector Library</div>
+    <h2 class="sec-h2">Threats NetraShield Neutralizes</h2>
+  </div>
+
+  <div style="overflow: hidden; margin-top: 2rem;">
+    <div class="scroll-track" id="scrollTrack"></div>
+  </div>
+</div>
+
+<!-- BIOMETRICS SOLUTION -->
+<section id="solution" class="reveal">
+  <div class="sec-label">Defense Architecture</div>
+  <h2 class="sec-h2">Behavioral Biometrics Engine</h2>
+  <p class="sec-sub">NetraShield builds a unique behavioral fingerprint for every user — invisible to attackers, impossible to replicate.</p>
+
+  <div class="bio-grid">
+    <div class="bio-card">
+      <div class="bio-icon-wrap">⌨️</div>
+      <h3>Typing Rhythm</h3>
+      <p>Keystroke dynamics — dwell time, flight time, and typing cadence — create a behavioral signature with 99.7% unique identification accuracy.</p>
+      <div class="bio-bar-wrap">
+        <div class="bio-bar-label"><span>Detection Confidence</span><span>99.7%</span></div>
+        <div class="bio-bar-track"><div class="bio-bar-fill" style="width:99.7%"></div></div>
+      </div>
+    </div>
+
+    <div class="bio-card">
+      <div class="bio-icon-wrap">🖱️</div>
+      <h3>Mouse Movement</h3>
+      <p>Micro-movement entropy, cursor velocity curves, and click pressure patterns reveal authentic human interaction that bots and scripts cannot replicate.</p>
+      <div class="bio-bar-wrap">
+        <div class="bio-bar-label"><span>Bot Detection Rate</span><span>97.3%</span></div>
+        <div class="bio-bar-track"><div class="bio-bar-fill" style="width:97.3%"></div></div>
+      </div>
+    </div>
+
+    <div class="bio-card">
+      <div class="bio-icon-wrap">📱</div>
+      <h3>Device Fingerprint</h3>
+      <p>Hardware signatures, GPU rendering patterns, sensor data, and network topology create an immutable device identity that persists across VPN and proxy attempts.</p>
+      <div class="bio-bar-wrap">
+        <div class="bio-bar-label"><span>Spoof Resistance</span><span>94.8%</span></div>
+        <div class="bio-bar-track"><div class="bio-bar-fill" style="width:94.8%"></div></div>
+      </div>
+    </div>
+
+    <div class="bio-card">
+      <div class="bio-icon-wrap">🧭</div>
+      <h3>Navigation Behavior</h3>
+      <p>Session flow, scroll patterns, and UI interaction sequences build a behavioral graph that detects account takeovers even when credentials match exactly.</p>
+      <div class="bio-bar-wrap">
+        <div class="bio-bar-label"><span>ATO Detection</span><span>98.1%</span></div>
+        <div class="bio-bar-track"><div class="bio-bar-fill" style="width:98.1%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAUD SIMULATION -->
+<section id="simulation" class="reveal">
+  <div class="sec-label">Live AI Engine</div>
+  <h2 class="sec-h2">Fraud Detection Simulation</h2>
+  <p class="sec-sub">Watch NetraShield's behavioral AI analyze a suspicious login attempt in real time.</p>
+
+  <div class="sim-wrap">
+    <div class="sim-header">
+      <div class="sim-title">// NETRASHIELD AI ANALYSIS PANEL v3.2.1</div>
+      <div class="sim-status">SYSTEM ACTIVE — 847ms avg response</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; flex-wrap: wrap;">
+      <div>
+        <div class="trust-score-wrap">
+          <div class="trust-label">TRUST SCORE</div>
+          <div class="trust-ring">
+            <div class="trust-score-val" id="trustVal">34</div>
+          </div>
+          <div style="font-size:0.75rem; color:var(--warn); font-family:var(--mono); margin-top:0.5rem;">⚠ ELEVATED RISK</div>
+        </div>
+
+        <div class="alert-box">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-text">BEHAVIORAL ANOMALY DETECTED<br>Session fingerprint mismatch — isolation triggered</div>
+        </div>
+      </div>
+
+      <div class="signal-grid">
+        <div class="signal-item">
+          <div class="signal-label">Typing Consistency</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-bad" style="width:23%"></div></div>
+          <div class="signal-val val-bad">23% — ANOMALOUS</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-label">Mouse Entropy</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-warn" style="width:41%"></div></div>
+          <div class="signal-val val-warn">41% — SUSPICIOUS</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-label">Voice Authenticity</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-bad" style="width:18%"></div></div>
+          <div class="signal-val val-bad">18% — DEEPFAKE</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-label">Device Mismatch</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-bad" style="width:7%"></div></div>
+          <div class="signal-val val-bad">7% — SPOOFED</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-label">Navigation Pattern</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-warn" style="width:38%"></div></div>
+          <div class="signal-val val-warn">38% — IRREGULAR</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-label">Credential Match</div>
+          <div class="signal-bar-track"><div class="signal-bar bar-good" style="width:100%"></div></div>
+          <div class="signal-val val-good">100% — VALID</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem; padding:1rem; background:rgba(255,56,96,0.06); border:1px solid rgba(255,56,96,0.15); border-radius:10px;">
+      <div style="font-size:0.7rem; font-family:var(--mono); letter-spacing:2px; color:var(--danger); margin-bottom:0.5rem;">// AI VERDICT</div>
+      <div style="font-family:var(--mono); font-size:0.9rem; color:white; line-height:1.7;">
+        CONCLUSION: <span style="color:var(--danger); font-weight:700;">HIGH-CONFIDENCE FRAUD</span> — Valid credentials presented with mismatched behavioral biometrics. Pattern consistent with credential-stuffing + deepfake bypass attempt. <span style="color:var(--warn);">ACTION: Session isolated. Risk flag elevated. Human review queued.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="reveal">
+  <div class="sec-label">SOC Command Center</div>
+  <h2 class="sec-h2">Live Cybersecurity Dashboard</h2>
+  <p class="sec-sub">Enterprise-grade threat visibility across your entire banking infrastructure.</p>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dot-active"></div> Threats Blocked Today</div>
+      <div class="metric-big" id="threatCount">4,782</div>
+      <div class="metric-sub">↑ 12% vs yesterday</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dot-active"></div> Sessions Monitored</div>
+      <div class="metric-big">1.2M</div>
+      <div class="metric-sub">Real-time behavioral analysis</div>
+    </div>
+
+    <div class="dash-card" style="grid-column: span 2;">
+      <div class="dash-card-title"><div class="dot-active"></div> Live Threat Feed</div>
+      <div class="log-feed" id="logFeed">
+        <div class="log-item"><span class="log-time">14:31:07</span><div class="log-dot red"></div><span style="color:var(--danger)">Deepfake video KYC bypass detected — Account #7X4892</span></div>
+        <div class="log-item"><span class="log-time">14:31:02</span><div class="log-dot warn"></div><span style="color:var(--warn)">OTP replay attack blocked — IP 192.168.44.221</span></div>
+        <div class="log-item"><span class="log-time">14:30:58</span><div class="log-dot red"></div><span style="color:var(--danger)">Session hijacking attempt isolated — Token revoked</span></div>
+        <div class="log-item"><span class="log-time">14:30:51</span><div class="log-dot warn"></div><span style="color:var(--warn)">Behavioral anomaly flagged — Credential stuffing pattern</span></div>
+        <div class="log-item"><span class="log-time">14:30:44</span><div class="log-dot green"></div><span style="color:var(--success)">Threat neutralized — Session restored for verified user</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="reveal">
+  <div class="sec-label">Future Vision</div>
+  <h2 class="sec-h2">What's Coming in NetraShield</h2>
+  <p class="sec-sub">Building toward autonomous, self-healing fraud defense infrastructure for the quantum era.</p>
+
+  <div class="road-grid">
+    <div class="road-card">
+      <div class="road-glow"></div>
+      <div class="road-phase">Phase 4 · Q3 2026</div>
+      <h3>AI Insider Threat Prediction</h3>
+      <p>Graph neural networks model employee behavioral baselines to detect insider threats 72 hours before action is taken.</p>
+    </div>
+    <div class="road-card">
+      <div class="road-glow"></div>
+      <div class="road-phase">Phase 5 · Q4 2026</div>
+      <h3>Quantum-Ready Authentication</h3>
+      <p>Post-quantum cryptographic primitives combined with behavioral biometrics create authentication that survives quantum decryption attacks.</p>
+    </div>
+    <div class="road-card">
+      <div class="road-glow"></div>
+      <div class="road-phase">Phase 6 · Q1 2027</div>
+      <h3>Autonomous Fraud Response</h3>
+      <p>AI-driven incident response autonomously contains, investigates, and remediates fraud incidents without human intervention at sub-second latency.</p>
+    </div>
+    <div class="road-card">
+      <div class="road-glow"></div>
+      <div class="road-phase">Phase 7 · Q2 2027</div>
+      <h3>Cross-Bank Threat Intelligence</h3>
+      <p>Federated learning enables threat pattern sharing across banking networks without exposing sensitive customer data — collective defense at industry scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="font-size:1.2rem; font-weight:700; margin-bottom:0.5rem;">Netra<span>Shield</span></div>
+  <p>NetraShield © 2026 • <span>AI-Powered Behavioral Fraud Defense</span></p>
+  <p style="margin-top:0.5rem; font-size:0.78rem; opacity:0.5;">Built for the future of secure banking infrastructure</p>
+</footer>
+
+<script>
+const attacks = [
+  { icon: '🤖', name: 'Deepfake Attacks', desc: 'AI-generated video and audio fabrications bypass biometric KYC verification and voice authentication systems at banking institutions.', level: 'SEVERITY: CRITICAL', color: 'var(--danger)' },
+  { icon: '📱', name: 'OTP Theft', desc: 'SIM-swapping and SS7 protocol exploits intercept one-time passwords, enabling full account takeover even with 2FA enabled.', level: 'SEVERITY: HIGH', color: '#f97316' },
+  { icon: '🎙️', name: 'Voice Cloning', desc: 'Real-time voice synthesis with 3 seconds of audio sample deceives call center agents and voice authentication systems.', level: 'SEVERITY: CRITICAL', color: 'var(--danger)' },
+  { icon: '🔑', name: 'Session Hijacking', desc: 'Stolen authentication tokens allow attackers to impersonate authenticated users without triggering credential-based security checks.', level: 'SEVERITY: HIGH', color: '#f97316' },
+  { icon: '🕵️', name: 'Credential Stuffing', desc: 'Automated bots test billions of username-password combinations from breach databases against banking login endpoints.', level: 'SEVERITY: HIGH', color: '#f97316' },
+  { icon: '🌐', name: 'Man-in-the-Browser', desc: 'Malware injects malicious code into banking web sessions, intercepting transactions at the point of execution.', level: 'SEVERITY: CRITICAL', color: 'var(--danger)' },
+  { icon: '💻', name: 'Synthetic Identity', desc: 'Blended real and fabricated PII creates ghost identities that pass KYC checks and accumulate credit before vanishing.', level: 'SEVERITY: HIGH', color: '#f97316' },
+  { icon: '🔄', name: 'Account Takeover', desc: 'Multi-vector combination attacks — credential theft plus social engineering plus device spoofing — overwhelm traditional fraud controls.', level: 'SEVERITY: CRITICAL', color: 'var(--danger)' }
+];
+
+function buildAttackCards() {
+  const track = document.getElementById('scrollTrack');
+  const doubled = [...attacks, ...attacks];
+  track.innerHTML = doubled.map(a => `
+    <div class="attack-card">
+      <div class="attack-icon">${a.icon}</div>
+      <h3>${a.name}</h3>
+      <p>${a.desc}</p>
+      <div class="attack-level" style="color:${a.color}">${a.level}</div>
+    </div>
+  `).join('');
+}
+buildAttackCards();
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+// Animated threat counter
+let count = 4782;
+setInterval(() => {
+  count += Math.floor(Math.random() * 3);
+  const el = document.getElementById('threatCount');
+  if (el) el.textContent = count.toLocaleString();
+}, 3000);
+
+// Live log feed
+const logs = [
+  { time: '', type: 'red', msg: 'Suspicious login attempt detected — behavioral mismatch flagged' },
+  { time: '', type: 'warn', msg: 'OTP replay blocked — duplicate token rejected' },
+  { time: '', type: 'red', msg: 'Session isolated — device fingerprint spoofing detected' },
+  { time: '', type: 'warn', msg: 'Behavioral anomaly detected — navigation pattern irregular' },
+  { time: '', type: 'green', msg: 'System healthy — 847ms avg response latency' },
+  { time: '', type: 'red', msg: 'Voice cloning attempt intercepted — deepfake score 94%' },
+  { time: '', type: 'warn', msg: 'Credential stuffing pattern identified — IP range blocked' },
+];
+
+let logIdx = 0;
+setInterval(() => {
+  const feed = document.getElementById('logFeed');
+  if (!feed) return;
+  const log = logs[logIdx % logs.length];
+  const now = new Date();
+  const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const colors = { red: 'var(--danger)', warn: 'var(--warn)', green: 'var(--success)' };
+  const item = document.createElement('div');
+  item.className = 'log-item';
+  item.innerHTML = `<span class="log-time">${t}</span><div class="log-dot ${log.type}"></div><span style="color:${colors[log.type]}">${log.msg}</span>`;
+  feed.insertBefore(item, feed.firstChild);
+  if (feed.children.length > 7) feed.removeChild(feed.lastChild);
+  logIdx++;
+}, 4000);
+
+// Trust score animation
+let ts = 34;
+let dir = 1;
+setInterval(() => {
+  ts += dir * (Math.random() * 3);
+  if (ts > 45) dir = -1;
+  if (ts < 25) dir = 1;
+  const el = document.getElementById('trustVal');
+  if (el) el.textContent = Math.round(ts);
+}, 2000);
+</script>
+</body>
+</html>
